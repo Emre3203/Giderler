@@ -476,6 +476,168 @@ body {
 }
 .submit-btn:active { opacity: 0.85; }
 
+/* SHOPPING LIST */
+.liste-top {
+  padding: 20px 20px 0;
+  display: flex;
+  gap: 8px;
+}
+
+.liste-input-wrap {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+}
+
+.liste-input {
+  flex: 1;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+}
+.liste-input:focus { border-color: var(--accent2); }
+.liste-input::placeholder { color: var(--muted); }
+
+.liste-add-btn {
+  background: var(--ink);
+  color: var(--accent2);
+  border: none;
+  border-radius: 10px;
+  width: 48px;
+  font-size: 22px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+.liste-add-btn:active { opacity: 0.75; }
+
+.liste-filters {
+  display: flex;
+  gap: 6px;
+  padding: 14px 20px 6px;
+}
+
+.liste-filter-btn {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.liste-filter-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--accent2);
+}
+
+.liste-stats {
+  padding: 0 20px 10px;
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.liste-stat { display: flex; align-items: center; gap: 4px; }
+
+.liste-items {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.liste-item {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  animation: fadeUp 0.2s ease;
+  transition: opacity 0.2s;
+}
+
+.liste-item.done { opacity: 0.5; }
+
+.liste-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+
+.liste-check.checked {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.liste-item-name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.liste-item.done .liste-item-name {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.liste-item-cat {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.liste-del {
+  background: none;
+  border: none;
+  color: var(--border);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+  line-height: 1;
+}
+.liste-del:active { color: var(--red); }
+
+.clear-done-btn {
+  margin: 12px 20px 0;
+  width: calc(100% - 40px);
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.clear-done-btn:active { border-color: var(--red); color: var(--red); }
+
 /* divider */
 .divider {
   height: 1px;
@@ -521,8 +683,9 @@ body {
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" id="tabSabit" onclick="switchTab('sabit')">🏦 Sabit Giderler</button>
-    <button class="tab" id="tabHarcama" onclick="switchTab('harcama')">🛍 Harcamalar</button>
+    <button class="tab active" id="tabSabit" onclick="switchTab('sabit')">🏦 Sabit</button>
+    <button class="tab" id="tabHarcama" onclick="switchTab('harcama')">🛍 Harcama</button>
+    <button class="tab" id="tabListe" onclick="switchTab('liste')">📋 Liste</button>
     <button class="tab" id="tabOzet" onclick="switchTab('ozet')">📊 Özet</button>
   </div>
 </div>
@@ -571,6 +734,25 @@ body {
   </div>
   <div class="section-label">Harcamalar</div>
   <div class="list" id="harcamaList"></div>
+</div>
+
+<div id="viewListe" style="display:none">
+  <div class="liste-top">
+    <div class="liste-input-wrap">
+      <input class="liste-input" id="listeInput" placeholder="Ürün ekle... (örn. Süt, Deterjan)" onkeydown="if(event.key==='Enter')addListeItem()" />
+    </div>
+    <button class="liste-add-btn" onclick="addListeItem()">＋</button>
+  </div>
+
+  <div class="liste-filters">
+    <button class="liste-filter-btn active" id="lfAll" onclick="setListeFilter('all')">Tümü</button>
+    <button class="liste-filter-btn" id="lfPending" onclick="setListeFilter('pending')">⏳ Bekleyen</button>
+    <button class="liste-filter-btn" id="lfDone" onclick="setListeFilter('done')">✅ Alınanlar</button>
+  </div>
+
+  <div class="liste-stats" id="listeStats"></div>
+  <div class="liste-items" id="listeItems"></div>
+  <button class="clear-done-btn" id="clearDoneBtn" onclick="clearDone()" style="display:none">🗑 Alınanları Temizle</button>
 </div>
 
 <div id="viewOzet" style="display:none">
@@ -710,13 +892,103 @@ function changeMonth(d) {
   render();
 }
 
+let listeFilter = 'all';
+
+function loadListe() { try { return JSON.parse(localStorage.getItem('shopping_list') || '[]'); } catch { return []; } }
+function saveListe(list) { localStorage.setItem('shopping_list', JSON.stringify(list)); }
+
+function addListeItem() {
+  const input = document.getElementById('listeInput');
+  const name = input.value.trim();
+  if (!name) { input.focus(); return; }
+  const list = loadListe();
+  list.unshift({ id: Date.now().toString(), name, done: false });
+  saveListe(list);
+  input.value = '';
+  renderListe();
+  input.focus();
+}
+
+function toggleListe(id) {
+  const list = loadListe().map(e => e.id===id ? {...e, done:!e.done} : e);
+  saveListe(list);
+  renderListe();
+}
+
+function delListe(id) {
+  saveListe(loadListe().filter(e => e.id!==id));
+  renderListe();
+}
+
+function clearDone() {
+  saveListe(loadListe().filter(e => !e.done));
+  renderListe();
+}
+
+function setListeFilter(f) {
+  listeFilter = f;
+  ['All','Pending','Done'].forEach(x => {
+    document.getElementById('lf'+x).classList.toggle('active', f===x.toLowerCase());
+  });
+  renderListe();
+}
+
+function renderListe() {
+  const all = loadListe();
+  const pending = all.filter(e => !e.done);
+  const done = all.filter(e => e.done);
+
+  document.getElementById('listeStats').innerHTML =
+    `<div class="liste-stat">📦 <b>${all.length}</b> ürün</div>
+     <div class="liste-stat">⏳ <b>${pending.length}</b> bekleyen</div>
+     <div class="liste-stat">✅ <b>${done.length}</b> alınan</div>`;
+
+  const filtered = listeFilter==='pending' ? pending : listeFilter==='done' ? done : all;
+  const el = document.getElementById('listeItems');
+
+  if (!filtered.length) {
+    const msgs = {all:'Liste boş, ürün ekleyin', pending:'Bekleyen ürün yok 🎉', done:'Henüz alınan ürün yok'};
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🛒</div><p>${msgs[listeFilter]}</p></div>`;
+  } else {
+    el.innerHTML = filtered.map(e => `
+      <div class="liste-item ${e.done?'done':''}">
+        <button class="liste-check ${e.done?'checked':''}" onclick="toggleListe('${e.id}')">${e.done?'✓':''}</button>
+        <div style="flex:1;min-width:0">
+          <div class="liste-item-name">${e.name}</div>
+        </div>
+        <button class="liste-del" onclick="delListe('${e.id}')">✕</button>
+      </div>`).join('');
+  }
+
+  const clearBtn = document.getElementById('clearDoneBtn');
+  clearBtn.style.display = done.length ? 'block' : 'none';
+}
+
 function switchTab(t) {
   activeTab = t;
-  ['sabit','harcama','ozet'].forEach(x => {
-    document.getElementById('view' + x.charAt(0).toUpperCase() + x.slice(1)).style.display = x===t ? 'block' : 'none';
-    document.getElementById('tab' + x.charAt(0).toUpperCase() + x.slice(1)).classList.toggle('active', x===t);
+  ['sabit','harcama','liste','ozet'].forEach(x => {
+    const viewId = 'view' + x.charAt(0).toUpperCase() + x.slice(1);
+    const tabId  = 'tab'  + x.charAt(0).toUpperCase() + x.slice(1);
+    document.getElementById(viewId).style.display = x===t ? 'block' : 'none';
+    document.getElementById(tabId).classList.toggle('active', x===t);
   });
-  render();
+  if(t==='liste') renderListe();
+  else render();
+}
+
+function openModal() {
+  if(activeTab==='liste') {
+    document.getElementById('listeInput').focus();
+    return;
+  }
+  const today = new Date();
+  document.getElementById('iDate').value = today.toISOString().split('T')[0];
+  document.getElementById('iName').value = '';
+  document.getElementById('iAmount').value = '';
+  selectType(activeTab === 'harcama' ? 'harcama' : 'sabit');
+  buildCatGrid();
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('iName').focus(), 400);
 }
 
 function render() {
@@ -824,19 +1096,6 @@ function del(type, id) {
   if(!confirm('Bu kaydı silmek istiyor musunuz?')) return;
   save2(type, load(type).filter(e=>e.id!==id));
   render();
-}
-
-function openModal() {
-  const today = new Date();
-  document.getElementById('iDate').value = today.toISOString().split('T')[0];
-  document.getElementById('iName').value = '';
-  document.getElementById('iAmount').value = '';
-
-  // Pre-select tab type
-  selectType(activeTab === 'harcama' ? 'harcama' : 'sabit');
-  buildCatGrid();
-  document.getElementById('overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('iName').focus(), 400);
 }
 
 function closeModal() {
