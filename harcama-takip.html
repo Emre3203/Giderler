@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Gider Takip</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --cream: #ede8de;
+  --card: #ffffff;
+  --ink: #1a1612;
+  --ink2: #4a4540;
+  --muted: #9a9088;
+  --border: #e0d8cc;
+  --accent: #2d5a3d;
+  --accent2: #c8a84b;
+  --red: #b84040;
+  --green: #2d5a3d;
+  --sabit-color: #2d5a3d;
+  --harcama-color: #8b3a1a;
+  --radius: 14px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: 110px;
+}
+
+/* HEADER */
+.header {
+  background: var(--ink);
+  padding: 52px 24px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.app-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 900;
+  color: #f5f0e8;
+  line-height: 1.1;
+}
+
+.app-title span { color: var(--accent2); }
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 100px;
+  padding: 6px 6px 6px 14px;
+}
+
+.month-nav button {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #f5f0e8;
+  width: 32px;
+  height: 32px;
+  border-radius: 100px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.month-nav button:active { background: rgba(255,255,255,0.3); }
+
+.month-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f5f0e8;
+  letter-spacing: 0.3px;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 100px;
+  padding: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  color: rgba(245,240,232,0.5);
+  background: transparent;
+  letter-spacing: 0.2px;
+}
+
+.tab.active {
+  background: var(--accent2);
+  color: var(--ink);
+}
+
+/* SUMMARY */
+.summary {
+  padding: 20px 20px 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.sum-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px 12px;
+  border: 1px solid var(--border);
+}
+
+.sum-card.main {
+  grid-column: 1 / -1;
+  background: var(--ink);
+  border-color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+}
+
+.sum-label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.sum-card.main .sum-label { color: rgba(245,240,232,0.4); margin-bottom: 4px; }
+
+.sum-amount {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.sum-card.main .sum-amount {
+  font-size: 28px;
+  color: var(--accent2);
+}
+
+.sum-card.main .sum-right { text-align: right; }
+
+.sum-card.main .sum-right .sum-label { color: rgba(245,240,232,0.4); }
+.sum-card.main .sum-right .sum-amount { font-size: 18px; color: rgba(245,240,232,0.7); }
+
+/* SECTION */
+.section-label {
+  padding: 4px 20px 10px;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+/* LIST */
+.list {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  animation: fadeUp 0.2s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(6px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.item-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.item-info { flex: 1; min-width: 0; }
+
+.item-name {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+}
+
+.item-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.item-right { text-align: right; flex-shrink: 0; }
+
+.item-amount {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.item-amount.sabit { color: var(--sabit-color); }
+.item-amount.harcama { color: var(--harcama-color); }
+
+.item-date {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.del-btn {
+  background: none;
+  border: none;
+  color: var(--border);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+  line-height: 1;
+}
+.del-btn:active { color: var(--red); }
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  padding: 56px 24px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 44px; margin-bottom: 12px; opacity: 0.5; }
+.empty p { font-size: 14px; }
+
+/* CHART */
+.chart-wrap {
+  padding: 0 20px 16px;
+}
+
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.chart-icon { width: 24px; text-align: center; font-size: 16px; }
+
+.chart-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--cream);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.chart-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.6s cubic-bezier(.4,0,.2,1);
+}
+
+.chart-val {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink2);
+  width: 68px;
+  text-align: right;
+}
+
+/* FAB */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 390px;
+  background: var(--ink);
+  color: var(--accent2);
+  border: none;
+  border-radius: 100px;
+  padding: 18px 24px;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 32px rgba(26,22,18,0.25);
+  transition: transform 0.1s, box-shadow 0.2s;
+  z-index: 20;
+}
+.fab:active { transform: translateX(-50%) scale(0.97); }
+
+/* MODAL */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,22,18,0.65);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(3px);
+}
+
+.overlay.open { opacity:1; pointer-events:all; }
+
+.modal {
+  background: var(--bg);
+  border-radius: 22px 22px 0 0;
+  padding: 0 0 48px;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.overlay.open .modal { transform: translateY(0); }
+
+.modal-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 16px auto 0;
+}
+
+.modal-header {
+  padding: 20px 24px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: var(--cream);
+  border: none;
+  color: var(--ink2);
+  width: 34px;
+  height: 34px;
+  border-radius: 100px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-body { padding: 20px 24px 0; }
+
+.fg { margin-bottom: 16px; }
+
+.fg label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.fg input, .fg select {
+  width: 100%;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.fg input:focus, .fg select:focus { border-color: var(--accent2); }
+.fg input::placeholder { color: var(--muted); }
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.cat-opt {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cat-opt.sel {
+  border-color: var(--accent2);
+  background: rgba(200,168,75,0.1);
+}
+
+.cat-opt .ci { font-size: 22px; }
+.cat-opt .cn { font-size: 9px; color: var(--muted); margin-top: 3px; }
+.cat-opt.sel .cn { color: var(--accent2); }
+
+.submit-btn {
+  width: 100%;
+  background: var(--ink);
+  color: var(--accent2);
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.15s;
+}
+.submit-btn:active { opacity: 0.85; }
+
+/* divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 20px;
+}
+
+.type-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 11px 8px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+
+.type-btn.sel-sabit { border-color: var(--sabit-color); background: rgba(45,90,61,0.08); color: var(--sabit-color); }
+.type-btn.sel-harcama { border-color: var(--harcama-color); background: rgba(139,58,26,0.08); color: var(--harcama-color); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="app-title">Gider<br><span>Takip</span></div>
+    </div>
+    <div class="month-nav">
+      <div class="month-label" id="monthLabel"></div>
+      <button onclick="changeMonth(-1)">‹</button>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tabSabit" onclick="switchTab('sabit')">🏦 Sabit Giderler</button>
+    <button class="tab" id="tabHarcama" onclick="switchTab('harcama')">🛍 Harcamalar</button>
+    <button class="tab" id="tabOzet" onclick="switchTab('ozet')">📊 Özet</button>
+  </div>
+</div>
+
+<div id="viewSabit">
+  <div class="summary">
+    <div class="sum-card main">
+      <div>
+        <div class="sum-label">Sabit Giderler Toplamı</div>
+        <div class="sum-amount" id="sabitTotal">€0,00</div>
+      </div>
+      <div class="sum-right">
+        <div class="sum-label">Adet</div>
+        <div class="sum-amount" id="sabitCount">0</div>
+      </div>
+    </div>
+  </div>
+  <div class="section-label">Düzenli Ödemeler</div>
+  <div class="list" id="sabitList"></div>
+</div>
+
+<div id="viewHarcama" style="display:none">
+  <div class="summary">
+    <div class="sum-card main">
+      <div>
+        <div class="sum-label">Harcamalar Toplamı</div>
+        <div class="sum-amount" id="harcamaTotal">€0,00</div>
+      </div>
+      <div class="sum-right">
+        <div class="sum-label">Adet</div>
+        <div class="sum-amount" id="harcamaCount">0</div>
+      </div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">En Yüksek</div>
+      <div class="sum-amount" id="harcamaMax">€0</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Ortalama</div>
+      <div class="sum-amount" id="harcamaAvg">€0</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Günlük Ort.</div>
+      <div class="sum-amount" id="harcamaDaily">€0</div>
+    </div>
+  </div>
+  <div class="section-label">Harcamalar</div>
+  <div class="list" id="harcamaList"></div>
+</div>
+
+<div id="viewOzet" style="display:none">
+  <div class="summary">
+    <div class="sum-card main">
+      <div>
+        <div class="sum-label">Toplam (Sabit + Harcama)</div>
+        <div class="sum-amount" id="ozetTotal">€0,00</div>
+      </div>
+      <div class="sum-right">
+        <div class="sum-label">Bu Ay</div>
+        <div class="sum-amount" id="ozetMonth"></div>
+      </div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Sabit Giderler</div>
+      <div class="sum-amount" id="ozetSabit" style="color:var(--sabit-color)">€0</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Harcamalar</div>
+      <div class="sum-amount" id="ozetHarcama" style="color:var(--harcama-color)">€0</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Toplam Adet</div>
+      <div class="sum-amount" id="ozetCount">0</div>
+    </div>
+  </div>
+  <div class="section-label">Kategoriye Göre Harcama</div>
+  <div class="chart-wrap" id="ozetChart"></div>
+  <div class="divider"></div>
+  <div class="section-label">Son 6 Ay</div>
+  <div class="chart-wrap" id="monthChart"></div>
+</div>
+
+<button class="fab" onclick="openModal()">
+  <span style="font-size:20px">＋</span> Yeni Ekle
+</button>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="handleOvClick(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2>Yeni Kayıt</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="fg">
+        <label>Tür</label>
+        <div class="type-toggle">
+          <button class="type-btn sel-sabit" id="typeSabit" onclick="selectType('sabit')">🏦 Sabit Gider</button>
+          <button class="type-btn" id="typeHarcama" onclick="selectType('harcama')">🛍 Harcama</button>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Açıklama</label>
+        <input type="text" id="iName" placeholder="Kira, Netflix, Market..." />
+      </div>
+
+      <div class="fg">
+        <label>Tutar (€)</label>
+        <input type="number" id="iAmount" placeholder="0,00" inputmode="decimal" />
+      </div>
+
+      <div class="fg">
+        <label>Tarih</label>
+        <input type="date" id="iDate" />
+      </div>
+
+      <div class="fg" id="catSection">
+        <label>Kategori</label>
+        <div class="cat-grid" id="catGrid"></div>
+      </div>
+
+      <button class="submit-btn" onclick="save()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SABIT_CATS = [
+  {id:'kira',    label:'Kira',       icon:'🏠', color:'#2d5a3d'},
+  {id:'elektrik',label:'Elektrik',   icon:'⚡', color:'#c8a84b'},
+  {id:'dogalgaz', label:'Doğalgaz',  icon:'🔥', color:'#e07a3a'},
+  {id:'su',      label:'Su',         icon:'💧', color:'#4a90d9'},
+  {id:'internet',label:'İnternet',   icon:'📡', color:'#7a5dc8'},
+  {id:'telefon', label:'Telefon',    icon:'📱', color:'#50a87a'},
+  {id:'sigorta', label:'Sigorta',    icon:'🛡️', color:'#c05050'},
+  {id:'abone',   label:'Abonelik',   icon:'📺', color:'#8b3a8b'},
+  {id:'kredi',   label:'Kredi',      icon:'🏦', color:'#4a6a8a'},
+  {id:'okul',    label:'Eğitim',     icon:'🎓', color:'#6a8a3a'},
+  {id:'spor',    label:'Spor',       icon:'🏋️', color:'#d45a20'},
+  {id:'diger_s', label:'Diğer',      icon:'📌', color:'#9a8a7a'},
+];
+
+const HARCAMA_CATS = [
+  {id:'market',  label:'Market',     icon:'🛒', color:'#2d5a3d'},
+  {id:'yemek',   label:'Yemek',      icon:'🍽️', color:'#c05050'},
+  {id:'kafe',    label:'Kafe',       icon:'☕', color:'#8b6a3a'},
+  {id:'ulasim',  label:'Ulaşım',     icon:'🚌', color:'#4a6a8a'},
+  {id:'giyim',   label:'Giyim',      icon:'👗', color:'#8b3a8b'},
+  {id:'saglik',  label:'Sağlık',     icon:'💊', color:'#c05080'},
+  {id:'ev',      label:'Ev & Yaşam', icon:'🏡', color:'#50808a'},
+  {id:'eglence', label:'Eğlence',    icon:'🎬', color:'#6a50a8'},
+  {id:'cocuk',   label:'Çocuk',      icon:'🧸', color:'#d48040'},
+  {id:'bakim',   label:'Bakım',      icon:'🧴', color:'#c8a84b'},
+  {id:'hediye',  label:'Hediye',     icon:'🎁', color:'#a83a5a'},
+  {id:'diger_h', label:'Diğer',      icon:'📦', color:'#9a8a7a'},
+];
+
+const MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+let cy = new Date().getFullYear();
+let cm = new Date().getMonth();
+let activeTab = 'sabit';
+let modalType = 'sabit';
+let selCat = 'kira';
+
+function key(type) { return `${type}_${cy}_${cm}`; }
+function load(type) { try { return JSON.parse(localStorage.getItem(key(type)) || '[]'); } catch { return []; } }
+function save2(type, list) { localStorage.setItem(key(type), JSON.stringify(list)); }
+
+function fmt(n) {
+  return '€' + Number(n).toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtShort(n) {
+  if(n >= 1000) return '€' + (n/1000).toFixed(1) + 'k';
+  return '€' + Number(n).toFixed(0);
+}
+
+function changeMonth(d) {
+  cm += d;
+  if(cm > 11) { cm=0; cy++; }
+  if(cm < 0)  { cm=11; cy--; }
+  render();
+}
+
+function switchTab(t) {
+  activeTab = t;
+  ['sabit','harcama','ozet'].forEach(x => {
+    document.getElementById('view' + x.charAt(0).toUpperCase() + x.slice(1)).style.display = x===t ? 'block' : 'none';
+    document.getElementById('tab' + x.charAt(0).toUpperCase() + x.slice(1)).classList.toggle('active', x===t);
+  });
+  render();
+}
+
+function render() {
+  document.getElementById('monthLabel').textContent = `${MONTHS[cm]} ${cy}`;
+
+  const sabitList = load('sabit');
+  const harcamaList = load('harcama');
+
+  // Sabit
+  const sabitTotal = sabitList.reduce((s,e)=>s+e.amount,0);
+  document.getElementById('sabitTotal').textContent = fmt(sabitTotal);
+  document.getElementById('sabitCount').textContent = sabitList.length;
+
+  const sl = document.getElementById('sabitList');
+  if(!sabitList.length) {
+    sl.innerHTML = `<div class="empty"><div class="empty-icon">🏦</div><p>Sabit gider eklenmemiş</p></div>`;
+  } else {
+    const sorted = [...sabitList].sort((a,b)=>b.amount-a.amount);
+    sl.innerHTML = sorted.map(e => renderItem(e, SABIT_CATS, 'sabit')).join('');
+  }
+
+  // Harcama
+  const hTotal = harcamaList.reduce((s,e)=>s+e.amount,0);
+  const hMax = harcamaList.length ? Math.max(...harcamaList.map(e=>e.amount)) : 0;
+  const hAvg = harcamaList.length ? hTotal/harcamaList.length : 0;
+  const daysInMonth = new Date(cy, cm+1, 0).getDate();
+  document.getElementById('harcamaTotal').textContent = fmt(hTotal);
+  document.getElementById('harcamaCount').textContent = harcamaList.length;
+  document.getElementById('harcamaMax').textContent = fmtShort(hMax);
+  document.getElementById('harcamaAvg').textContent = fmtShort(hAvg);
+  document.getElementById('harcamaDaily').textContent = fmtShort(hTotal/daysInMonth);
+
+  const hl = document.getElementById('harcamaList');
+  if(!harcamaList.length) {
+    hl.innerHTML = `<div class="empty"><div class="empty-icon">🛍</div><p>Harcama eklenmemiş</p></div>`;
+  } else {
+    const sorted = [...harcamaList].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    hl.innerHTML = sorted.map(e => renderItem(e, HARCAMA_CATS, 'harcama')).join('');
+  }
+
+  // Ozet
+  const grandTotal = sabitTotal + hTotal;
+  document.getElementById('ozetTotal').textContent = fmt(grandTotal);
+  document.getElementById('ozetMonth').textContent = MONTHS[cm];
+  document.getElementById('ozetSabit').textContent = fmt(sabitTotal);
+  document.getElementById('ozetHarcama').textContent = fmt(hTotal);
+  document.getElementById('ozetCount').textContent = sabitList.length + harcamaList.length;
+
+  // Category chart (harcama)
+  const catTotals = {};
+  harcamaList.forEach(e => { catTotals[e.category] = (catTotals[e.category]||0) + e.amount; });
+  const catSorted = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxCat = catSorted[0]?.[1] || 1;
+  const chartEl = document.getElementById('ozetChart');
+  chartEl.innerHTML = catSorted.map(([id,amt]) => {
+    const cat = HARCAMA_CATS.find(c=>c.id===id) || HARCAMA_CATS[11];
+    const pct = (amt/maxCat*100).toFixed(1);
+    return `<div class="chart-row">
+      <div class="chart-icon">${cat.icon}</div>
+      <div class="chart-bg"><div class="chart-fill" style="width:${pct}%;background:${cat.color}"></div></div>
+      <div class="chart-val">${fmtShort(amt)}</div>
+    </div>`;
+  }).join('') || '<p style="color:var(--muted);font-size:13px">Henüz veri yok</p>';
+
+  // Last 6 months chart
+  const months6 = [];
+  for(let i=5;i>=0;i--) {
+    let mm = cm - i; let yy = cy;
+    if(mm<0){mm+=12;yy--;}
+    const s = JSON.parse(localStorage.getItem(`sabit_${yy}_${mm}`) || '[]').reduce((s,e)=>s+e.amount,0);
+    const h = JSON.parse(localStorage.getItem(`harcama_${yy}_${mm}`) || '[]').reduce((s,e)=>s+e.amount,0);
+    months6.push({label: MONTHS[mm].slice(0,3), sabit:s, harcama:h, total:s+h});
+  }
+  const maxMonth = Math.max(...months6.map(m=>m.total)) || 1;
+  document.getElementById('monthChart').innerHTML = months6.map(m => {
+    const pct = (m.total/maxMonth*100).toFixed(1);
+    const isCurrentMonth = m.label === MONTHS[cm].slice(0,3);
+    return `<div class="chart-row">
+      <div class="chart-icon" style="font-size:11px;color:var(--muted);width:28px;text-align:left">${m.label}</div>
+      <div class="chart-bg"><div class="chart-fill" style="width:${pct}%;background:${isCurrentMonth?'var(--accent2)':'var(--ink)'}"></div></div>
+      <div class="chart-val">${fmtShort(m.total)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderItem(e, cats, type) {
+  const cat = cats.find(c=>c.id===e.category) || cats[cats.length-1];
+  const d = new Date(e.date+'T12:00:00');
+  const dateStr = d.toLocaleDateString('tr-TR',{day:'numeric',month:'short'});
+  return `<div class="item">
+    <div class="item-icon" style="background:${cat.color}18">${cat.icon}</div>
+    <div class="item-info">
+      <div class="item-name">${e.name}</div>
+      <div class="item-sub">${cat.label}</div>
+    </div>
+    <div class="item-right">
+      <div class="item-amount ${type}">${fmt(e.amount)}</div>
+      <div class="item-date">${dateStr}</div>
+    </div>
+    <button class="del-btn" onclick="del('${type}','${e.id}')">✕</button>
+  </div>`;
+}
+
+function del(type, id) {
+  if(!confirm('Bu kaydı silmek istiyor musunuz?')) return;
+  save2(type, load(type).filter(e=>e.id!==id));
+  render();
+}
+
+function openModal() {
+  const today = new Date();
+  document.getElementById('iDate').value = today.toISOString().split('T')[0];
+  document.getElementById('iName').value = '';
+  document.getElementById('iAmount').value = '';
+
+  // Pre-select tab type
+  selectType(activeTab === 'harcama' ? 'harcama' : 'sabit');
+  buildCatGrid();
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('iName').focus(), 400);
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function handleOvClick(e) {
+  if(e.target===document.getElementById('overlay')) closeModal();
+}
+
+function selectType(t) {
+  modalType = t;
+  const ts = document.getElementById('typeSabit');
+  const th = document.getElementById('typeHarcama');
+  ts.className = 'type-btn' + (t==='sabit' ? ' sel-sabit' : '');
+  th.className = 'type-btn' + (t==='harcama' ? ' sel-harcama' : '');
+  selCat = t==='sabit' ? 'kira' : 'market';
+  buildCatGrid();
+}
+
+function buildCatGrid() {
+  const cats = modalType==='sabit' ? SABIT_CATS : HARCAMA_CATS;
+  document.getElementById('catGrid').innerHTML = cats.map(c =>
+    `<div class="cat-opt ${c.id===selCat?'sel':''}" onclick="selCatFn('${c.id}')">
+      <div class="ci">${c.icon}</div>
+      <div class="cn">${c.label}</div>
+    </div>`
+  ).join('');
+}
+
+function selCatFn(id) {
+  selCat = id;
+  buildCatGrid();
+}
+
+function save() {
+  const name = document.getElementById('iName').value.trim();
+  const amount = parseFloat(document.getElementById('iAmount').value);
+  const date = document.getElementById('iDate').value;
+
+  if(!name){ document.getElementById('iName').focus(); return; }
+  if(!amount||amount<=0){ document.getElementById('iAmount').focus(); return; }
+  if(!date) return;
+
+  const list = load(modalType);
+  const d = new Date(date+'T12:00:00');
+
+  // switch to that month
+  cy = d.getFullYear();
+  cm = d.getMonth();
+
+  list.push({ id: Date.now().toString(), name, amount, date, category: selCat });
+  save2(modalType, list);
+  closeModal();
+
+  // switch to correct tab
+  switchTab(modalType);
+  render();
+}
+
+// init
+render();
+</script>
+</body>
+</html>
