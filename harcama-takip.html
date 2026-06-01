@@ -951,7 +951,8 @@ function renderListe() {
     const msgs = {all:'Liste boş, ürün ekleyin', pending:'Bekleyen ürün yok 🎉', done:'Henüz alınan ürün yok'};
     el.innerHTML = `<div class="empty"><div class="empty-icon">🛒</div><p>${msgs[listeFilter]}</p></div>`;
   } else {
-    el.innerHTML = filtered.map(e => `
+    filtered.sort((a,b) => Number(b.id) - Number(a.id));
+  el.innerHTML = filtered.map(e => `
       <div class="liste-item ${e.done?'done':''}">
         <button class="liste-check ${e.done?'checked':''}" onclick="toggleListe('${e.id}')">${e.done?'✓':''}</button>
         <div style="flex:1;min-width:0">
