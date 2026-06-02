@@ -96,19 +96,19 @@ body {
 /* TABS */
 .tabs {
   display: flex;
-  gap: 4px;
+  gap: 3px;
   background: rgba(255,255,255,0.08);
   border-radius: 100px;
-  padding: 4px;
+  padding: 3px;
 }
 
 .tab {
   flex: 1;
-  padding: 7px 4px;
+  padding: 5px 4px;
   border: none;
   border-radius: 100px;
   font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s;
@@ -149,7 +149,7 @@ body {
 }
 
 .sum-label {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -161,12 +161,12 @@ body {
 .sum-amount {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 17px;
   color: var(--ink);
 }
 
 .sum-card.main .sum-amount {
-  font-size: 22px;
+  font-size: 24px;
   color: var(--accent2);
 }
 
@@ -224,7 +224,7 @@ body {
 
 .item-name {
   font-weight: 500;
-  font-size: 13px;
+  font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -232,7 +232,7 @@ body {
 }
 
 .item-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   margin-top: 1px;
 }
@@ -242,7 +242,7 @@ body {
 .item-amount {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .item-amount.sabit { color: var(--sabit-color); }
@@ -639,6 +639,33 @@ body {
 }
 .clear-done-btn:active { border-color: var(--red); color: var(--red); }
 
+/* BACKUP */
+.backup-bar {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+
+.backup-btn {
+  flex: 1;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.backup-btn:active { background: var(--cream); }
+.backup-btn.restore { color: var(--sabit-color); border-color: var(--sabit-color); background: rgba(45,90,61,0.06); }
+
 /* divider */
 .divider {
   height: 1px;
@@ -786,6 +813,13 @@ body {
   <div class="divider"></div>
   <div class="section-label">Son 6 Ay</div>
   <div class="chart-wrap" id="monthChart"></div>
+  <div class="divider"></div>
+  <div class="section-label">Yedekleme</div>
+  <div class="backup-bar">
+    <button class="backup-btn" onclick="exportBackup()">⬇️ Yedek Al</button>
+    <button class="backup-btn restore" onclick="document.getElementById('restoreInput').click()">⬆️ Geri Yükle</button>
+  </div>
+  <input type="file" id="restoreInput" accept=".json" style="display:none" onchange="importBackup(event)" />
 </div>
 
 <button class="fab" onclick="openModal()">
@@ -1156,6 +1190,42 @@ function save() {
   // switch to correct tab
   switchTab(modalType);
   render();
+}
+
+function exportBackup() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    data[k] = localStorage.getItem(k);
+  }
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `gider-yedek-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!confirm('Mevcut veriler silinecek ve yedek yüklenecek. Devam etmek istiyor musunuz?')) return;
+      localStorage.clear();
+      Object.entries(data).forEach(([k, v]) => localStorage.setItem(k, v));
+      alert('Yedek başarıyla yüklendi!');
+      render();
+    } catch {
+      alert('Geçersiz yedek dosyası.');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
 }
 
 // init
